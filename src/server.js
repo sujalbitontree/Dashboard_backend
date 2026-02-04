@@ -1,10 +1,8 @@
-// 1. External Imports
 import express from 'express'; 
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-
 dotenv.config();
 
 const app = express();

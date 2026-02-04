@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config()
 import * as userService from '../services/userService.js'
-import { forgotPasswordSchema, signinSchema, signupSchema } from '../utils/userValidator.js'
+import { changePasswordSchema, editProfileSchema, forgotPasswordSchema, resetPasswordSchema, signinSchema, signupSchema } from '../utils/userValidator.js'
 import { verifyToken } from '../utils/jwtTokens.js'
 import * as userRepository from '../repositories/userRepository.js'
 import { generateToken } from '../utils/jwtTokens.js'
@@ -123,7 +123,14 @@ export const forgotPassword = async(req,res)=>{
 }
 
 export const resetPassword = async (req,res)=>{
-  
+  const result = resetPasswordSchema.safeParse(req.body)
+  if (!result.success) {
+    console.log(`result.error`, result.error);
+    return res.status(400).json({
+      success: false,
+      message: result.error.issues[0].message,
+    })
+  }
   try {
     const token = req.params.token
     console.log(`token`,typeof token);
@@ -181,6 +188,15 @@ export const dashboard = async(req,res)=>{
 
 
 export const changePassword = async(req,res)=>{
+  const result = changePasswordSchema.safeParse(req.body)
+     if (!result.success) {
+    console.log(`result.error`, result.error);
+    return res.status(400).json({
+      success: false,
+      message: result.error.issues[0].message,
+    })
+  }
+  
   try {
     const {oldPassword,newPassword} = req.body
     const id = req.user.id
@@ -202,6 +218,14 @@ export const changePassword = async(req,res)=>{
 }
 
 export const updateUser = async(req,res)=>{
+  const result = editProfileSchema.safeParse(req.body)
+  if (!result.success) {
+    console.log(`result.error`, result.error);
+    return res.status(400).json({
+      success: false,
+      message: result.error.issues[0].message,
+    })
+  }
   try {
     const {id,username,age,gender} = req.body
     await userService.updateUserData({id,username,age,gender})
